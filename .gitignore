@@ -68,3 +68,5 @@ Thumbs.db
 # Forzar la inclusión de la carpeta pkg de WASM para producción/GitHub Pages
 !crates/viterbi-wasm/pkg/
 !crates/viterbi-wasm/pkg/**/*
+!docs/pkg/
+!docs/pkg/**/*
