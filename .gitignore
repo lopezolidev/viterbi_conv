@@ -22,3 +22,43 @@ rustc-ice-*.txt
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# --- Artefactos de compilación de Rust (Cargo) ---
+/target/
+**/target/
+
+# --- Entornos virtuales de Python ---
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# --- Entornos de desarrollo y empaquetado (Maturin / WASM) ---
+.maturin/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# --- Archivos del sistema operativo y editores ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Logs y temporales ---
+*.log
+*.tmp
