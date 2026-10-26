@@ -4,7 +4,7 @@ members = [
     "crates/viterbi-core",
     # Se descomentararán al llegar a los Componentes 8 y 9:
     "crates/viterbi-wasm",
-    # "crates/viterbi-py",
+    "crates/viterbi-py",
 ]
 
 [workspace.package]
