@@ -1,0 +1,15 @@
+[package]
+name = "viterbi-wasm"
+version = "0.1.0"
+edition = "2021"
+authors = ["Principal Systems & DSP Engineering"]
+description = "FFI/WASM Bindings para el Motor Viterbi"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+viterbi-core = { path = "../viterbi-core" }
+wasm-bindgen = "0.2.87"
+
