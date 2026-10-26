@@ -1,8 +1,6 @@
 
 # Viterbi FEC Engine & Trellis Observability
 
-**[Español](https://www.google.com/search?q=%23espa%C3%B1ol) | [English**](https://www.google.com/search?q=%23english)
-
 ---
 
 # 🇪🇸 Documentación en Español
