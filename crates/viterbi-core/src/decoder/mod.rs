@@ -4,7 +4,7 @@
 //! (Viterbi, Fano) y expone las estructuras de observabilidad para la telemetría del Trellis.
 
 // El siguiente submódulo se habilitará en el Componente 5:
-// pub mod viterbi;
+pub mod viterbi;
 
 /// Estado final de la cadena decodificada tras el procesamiento de los bits de cola (zero-tailing).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

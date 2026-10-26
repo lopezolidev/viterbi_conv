@@ -12,6 +12,6 @@ pub mod config;
 pub mod fsm;
 pub mod encoder;
 pub mod decoder;
-// pub mod channel;
+pub mod channel;
 
 pub use config::{CodecConfig, ConfigError};
