@@ -44,17 +44,29 @@
 
     <script type="module">
         import init, { WasmViterbiEngine } from './pkg/viterbi_wasm.js';
-        
-        let engine;
 
         async function startApp() {
-            await init();
-            const btn = document.getElementById('simBtn');
-            btn.innerText = "Simular";
-            btn.disabled = false;
-            btn.onclick = runSimulation;
-            runSimulation(); // Ejecución inicial
+            try {
+                const btn = document.getElementById('simBtn');
+                btn.innerText = "Cargando Motor WASM...";
+                
+                // Inicialización forzando la ruta del archivo wasm generado
+                await init('./pkg/viterbi_wasm_bg.wasm');
+                
+                btn.innerText = "Simular";
+                btn.disabled = false;
+                btn.onclick = runSimulation;
+                
+                // Ejecución inicial de prueba
+                runSimulation();
+            } catch (err) {
+                console.error("Error al inicializar WASM:", err);
+                document.getElementById('simBtn').innerText = "Error de Carga";
+                alert("No se pudo cargar el motor WASM. Revisa la consola (F12).");
+            }
         }
+        
+        let engine;
 
         function runSimulation() {
             try {
