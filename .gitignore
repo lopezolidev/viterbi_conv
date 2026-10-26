@@ -62,3 +62,6 @@ Thumbs.db
 # --- Logs y temporales ---
 *.log
 *.tmp
+
+# Permitir la carpeta pkg dentro de docs para GitHub Pages
+!docs/pkg/
