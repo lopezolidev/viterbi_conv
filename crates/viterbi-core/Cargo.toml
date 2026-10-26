@@ -1,0 +1,11 @@
+[package]
+name = "viterbi-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Zero-allocation Convolutional Encoder, 1D Trellis FSM, Viterbi ACS & Fano Decoder core engine"
+
+[dependencies]
+# Motor matemático 100% puro en Rust estándar sin dependencias de OS ni UI.
+

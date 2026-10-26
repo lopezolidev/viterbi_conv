@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/viterbi-core",
+    # Se descomentararán al llegar a los Componentes 8 y 9:
+    # "crates/viterbi-wasm",
+    # "crates/viterbi-py",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT OR Apache-2.0"
+authors = ["Principal Systems & DSP Engineering"]
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+
+[profile.bench]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
