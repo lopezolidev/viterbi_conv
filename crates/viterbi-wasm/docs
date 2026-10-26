@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Viterbi Trellis Interactivo</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background-color: #1e1e1e; color: #d4d4d4; }
+        .panel { background: #2d2d2d; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        input { background: #1e1e1e; color: #00ffcc; border: 1px solid #555; padding: 5px; margin: 5px; font-family: monospace;}
+        button { background: #00ffcc; color: #000; font-weight: bold; border: none; padding: 8px 15px; cursor: pointer; border-radius: 3px;}
+        button:hover { background: #00ccaa; }
+        canvas { background: #111; border: 1px solid #444; border-radius: 5px; width: 100%; max-width: 800px;}
+        .highlight { color: #ff0055; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Simulador Viterbi Interactivo</h2>
+    
+    <div class="panel">
+        <label>Bits de entrada (0 y 1):</label>
+        <input type="text" id="inputSeq" value="1011000" size="20"><br>
+        
+        <label>Factor K:</label>
+        <input type="number" id="kFactor" value="3" min="2" max="7" size="5">
+        
+        <label>Polinomio G0 (Octal):</label>
+        <input type="text" id="poly0" value="7" size="5">
+        
+        <label>Polinomio G1 (Octal):</label>
+        <input type="text" id="poly1" value="5" size="5">
+        
+        <button id="simBtn" disabled>Cargando Motor WASM...</button>
+    </div>
+
+    <div class="panel">
+        <p><strong>Salida Codificada:</strong> <span id="outEncoded" class="highlight"></span></p>
+        <p><strong>Salida Decodificada (Viterbi):</strong> <span id="outDecoded" class="highlight"></span></p>
+    </div>
+
+    <div class="panel">
+        <h3>Desenrollado de Máquina de Estados (Camino Activo)</h3>
+        <canvas id="trellisCanvas" width="800" height="300"></canvas>
+    </div>
+
+    <script type="module">
+        import init, { WasmViterbiEngine } from './pkg/viterbi_wasm.js';
+        
+        let engine;
+
+        async function startApp() {
+            await init();
+            const btn = document.getElementById('simBtn');
+            btn.innerText = "Simular";
+            btn.disabled = false;
+            btn.onclick = runSimulation;
+            runSimulation(); // Ejecución inicial
+        }
+
+        function runSimulation() {
+            try {
+                const kFactor = parseInt(document.getElementById('kFactor').value);
+                const p0 = parseInt(document.getElementById('poly0').value, 8);
+                const p1 = parseInt(document.getElementById('poly1').value, 8);
+                const seqStr = document.getElementById('inputSeq').value;
+                const inputBits = new Uint8Array(seqStr.split('').map(Number));
+
+                // 1. Instanciación Dinámica sin recompilar Rust
+                engine = new WasmViterbiEngine(2, 1, kFactor, new Uint32Array([p0, p1]));
+                
+                // 2. Ejecutar procesamiento de trama completa
+                const encoded = engine.encode_frame(inputBits);
+                const decoded = engine.decode_frame(encoded);
+
+                document.getElementById('outEncoded').innerText = Array.from(encoded).join('');
+                document.getElementById('outDecoded').innerText = Array.from(decoded).join('');
+
+                // 3. Extraer telemetría paso a paso para dibujar el Trellis
+                engine.reset_engine();
+                let activePath = [0]; // Siempre inicia en estado 0
+                for (let i = 0; i < inputBits.length; i++) {
+                    let telemetry = engine.encode_step_with_telemetry(inputBits[i]);
+                    activePath.push(telemetry.next_state);
+                }
+
+                drawTrellisPath(activePath, kFactor);
+            } catch (error) {
+                alert("Error de Configuración: Verifica que K*k <= 16 y los parámetros sean válidos.\n\n" + error);
+            }
+        }
+
+        function drawTrellisPath(path, K) {
+            const canvas = document.getElementById('trellisCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const numStates = Math.pow(2, K - 1);
+            const padX = 40, padY = 30;
+            const stepX = (canvas.width - 2 * padX) / (path.length - 1 || 1);
+            const stepY = numStates > 1 ? (canvas.height - 2 * padY) / (numStates - 1) : 0;
+
+            // Dibujar cuadrícula base (grilla de estados)
+            ctx.fillStyle = '#666';
+            ctx.font = '12px monospace';
+            for(let s = 0; s < numStates; s++) {
+                const y = padY + s * stepY;
+                ctx.fillText("S" + s, 5, y + 4);
+                ctx.beginPath();
+                ctx.moveTo(padX, y);
+                ctx.lineTo(canvas.width - padX, y);
+                ctx.strokeStyle = '#333';
+                ctx.stroke();
+            }
+
+            // Dibujar el camino activo (telemetría)
+            ctx.beginPath();
+            ctx.strokeStyle = '#00ffcc';
+            ctx.lineWidth = 3;
+            for(let t = 0; t < path.length; t++) {
+                const x = padX + t * stepX;
+                const y = padY + path[t] * stepY;
+                if(t === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Dibujar los nodos en el camino
+            for(let t = 0; t < path.length; t++) {
+                const x = padX + t * stepX;
+                const y = padY + path[t] * stepY;
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = '#ff0055';
+                ctx.fill();
+            }
+        }
+
+        startApp();
+    </script>
+</body>
+</html>
