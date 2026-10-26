@@ -11,7 +11,7 @@ pub mod config;
 // Los siguientes submódulos se habilitarán incrementalmente en los próximos turnos:
 pub mod fsm;
 pub mod encoder;
-// pub mod decoder;
+pub mod decoder;
 // pub mod channel;
 
 pub use config::{CodecConfig, ConfigError};
