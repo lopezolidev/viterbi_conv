@@ -1,0 +1,16 @@
+[package]
+name = "viterbi-py"
+version = "0.1.0"
+edition = "2021"
+authors = ["Principal Systems & DSP Engineering"]
+description = "PyO3 Bindings y Paralelismo (Rayon) para Viterbi"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "viterbi_py"
+
+[dependencies]
+viterbi-core = { path = "../viterbi-core" }
+pyo3 = { version = "0.21.2" }
+rayon = "1.10.0"
