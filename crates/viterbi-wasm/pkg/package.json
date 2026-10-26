@@ -1,0 +1,19 @@
+{
+  "name": "viterbi-wasm",
+  "type": "module",
+  "collaborators": [
+    "Principal Systems & DSP Engineering"
+  ],
+  "description": "FFI/WASM Bindings para el Motor Viterbi",
+  "version": "0.1.0",
+  "files": [
+    "viterbi_wasm_bg.wasm",
+    "viterbi_wasm.js",
+    "viterbi_wasm.d.ts"
+  ],
+  "main": "viterbi_wasm.js",
+  "types": "viterbi_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
